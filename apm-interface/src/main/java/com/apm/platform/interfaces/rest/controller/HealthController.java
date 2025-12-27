@@ -23,7 +23,7 @@ public class HealthController {
     }
 
     @GetMapping
-    public ResponseEntity<SystemHealthResponse> getSystemHealth(@PathVariable String systemId) {
+    public ResponseEntity<SystemHealthResponse> getSystemHealth(@PathVariable("systemId") String systemId) {
         MonitoredSystem system = systemRepository.findById(systemId)
             .orElseThrow(() -> new MonitoredSystemNotFoundException(systemId));
         
@@ -42,7 +42,7 @@ public class HealthController {
     }
 
     @PostMapping("/evaluate")
-    public ResponseEntity<SystemHealthResponse> evaluateHealth(@PathVariable String systemId) {
+    public ResponseEntity<SystemHealthResponse> evaluateHealth(@PathVariable("systemId") String systemId) {
         MonitoredSystem system = systemRepository.findById(systemId)
             .orElseThrow(() -> new MonitoredSystemNotFoundException(systemId));
         

@@ -35,7 +35,7 @@ public class MetricEntity {
     @Column(name = "memory_usage_percent", nullable = false)
     private double memoryUsagePercent;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "metric_additional_data", joinColumns = @JoinColumn(name = "metric_id"))
     @MapKeyColumn(name = "data_key")
     @Column(name = "data_value")

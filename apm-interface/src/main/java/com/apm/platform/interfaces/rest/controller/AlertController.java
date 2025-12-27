@@ -34,7 +34,7 @@ public class AlertController {
 
     @PostMapping("/systems/{systemId}/alert-rules")
     public ResponseEntity<AlertRuleResponse> createAlertRule(
-            @PathVariable String systemId,
+            @PathVariable("systemId") String systemId,
             @RequestBody CreateAlertRuleRequest request) {
         
         CreateAlertRuleRequest requestWithId = new CreateAlertRuleRequest(
@@ -51,7 +51,7 @@ public class AlertController {
     }
 
     @GetMapping("/systems/{systemId}/alert-rules")
-    public ResponseEntity<List<AlertRuleResponse>> getAlertRules(@PathVariable String systemId) {
+    public ResponseEntity<List<AlertRuleResponse>> getAlertRules(@PathVariable("systemId") String systemId) {
         List<AlertRuleResponse> rules = alertRuleRepository.findBySystemId(systemId)
             .stream()
             .map(AlertRuleMapper::toResponse)
@@ -62,8 +62,8 @@ public class AlertController {
 
     @GetMapping("/systems/{systemId}/alerts")
     public ResponseEntity<List<AlertResponse>> getAlerts(
-            @PathVariable String systemId,
-            @RequestParam(required = false) Boolean resolved) {
+            @PathVariable("systemId") String systemId,
+            @RequestParam(value = "resolved", required = false) Boolean resolved) {
         
         List<AlertResponse> alerts = resolved != null && !resolved
             ? alertRepository.findActiveBySystemId(systemId)
