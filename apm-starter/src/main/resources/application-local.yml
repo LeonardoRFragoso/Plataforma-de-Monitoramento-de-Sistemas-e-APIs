@@ -1,0 +1,62 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/apm_platform
+    username: apm_user
+    password: apm_password
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public
+
+apm:
+  scheduler:
+    enabled: true
+    metric-collection:
+      fixed-delay: 60000
+      thread-pool-size: 10
+    health-check:
+      fixed-delay: 30000
+      thread-pool-size: 5
+  
+  collector:
+    http:
+      connect-timeout: 5000
+      read-timeout: 10000
+    
+  alert:
+    evaluation:
+      enabled: true
+    notification:
+      channels:
+        - log
+        - websocket
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.apm.platform: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    name: logs/apm-platform-local.log

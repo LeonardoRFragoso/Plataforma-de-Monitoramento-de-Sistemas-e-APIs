@@ -1,0 +1,281 @@
+============================================================
+PROJETO: APM SIMPLIFICADO
+Plataforma de Monitoramento de Sistemas e APIs
+============================================================
+
+1. VISÃO GERAL
+------------------------------------------------------------
+Este projeto consiste em uma Plataforma de Monitoramento de Sistemas
+(APM – Application Performance Monitoring) desenvolvida em Java,
+inspirada em ferramentas corporativas como New Relic, Datadog e Dynatrace,
+porém em uma versão simplificada, didática e focada em boas práticas.
+
+O objetivo é demonstrar domínio técnico em:
+- Backend Java moderno
+- Arquitetura limpa
+- Observabilidade
+- Performance
+- Monitoramento em tempo real
+- Sistemas corporativos reais
+
+O projeto foi pensado especificamente para portfólio profissional,
+visando processos seletivos de desenvolvedor backend Java (Pleno/Sênior).
+
+------------------------------------------------------------
+
+2. PROBLEMA QUE O SISTEMA RESOLVE
+------------------------------------------------------------
+Em ambientes corporativos, é comum a existência de múltiplos serviços,
+APIs e jobs que precisam ser monitorados continuamente para garantir:
+
+- Alta disponibilidade
+- Baixa latência
+- Detecção rápida de falhas
+- Análise de performance
+- Histórico de incidentes
+
+Este projeto resolve o problema oferecendo uma plataforma centralizada
+que coleta métricas, analisa saúde dos serviços e emite alertas inteligentes.
+
+------------------------------------------------------------
+
+3. OBJETIVOS DO PROJETO
+------------------------------------------------------------
+Objetivo principal:
+Criar uma plataforma de monitoramento profissional, robusta e escalável.
+
+Objetivos técnicos:
+- Expor métricas de sistemas via API
+- Coletar e armazenar dados de performance
+- Exibir dashboards em tempo real
+- Detectar falhas automaticamente
+- Emitir alertas baseados em regras
+
+Objetivos de portfólio:
+- Demonstrar senioridade em Java
+- Mostrar domínio de observabilidade
+- Evidenciar boas práticas arquiteturais
+- Diferenciar-se de CRUDs básicos
+
+------------------------------------------------------------
+
+4. FUNCIONALIDADES PRINCIPAIS
+------------------------------------------------------------
+
+4.1 Cadastro de Sistemas Monitorados
+- Nome do sistema
+- URL base
+- Tipo (API, Serviço, Job)
+- Ambiente (Prod, Homologação, Dev)
+- Intervalo de coleta
+- Status (Ativo/Inativo)
+
+------------------------------------------------------------
+
+4.2 Coleta de Métricas (Automática)
+Métricas coletadas:
+- Tempo de resposta (latência)
+- Status HTTP
+- Taxa de erro
+- Disponibilidade
+- CPU (simulada ou real via Actuator)
+- Memória (simulada ou real via Actuator)
+
+Coleta via:
+- Spring Actuator
+- Micrometer
+- Health Check HTTP
+
+------------------------------------------------------------
+
+4.3 Health Check
+- Endpoint /health por sistema
+- Verificação periódica
+- Status:
+  - UP
+  - DEGRADED
+  - DOWN
+
+------------------------------------------------------------
+
+4.4 Dashboard de Monitoramento
+- Visão geral dos sistemas
+- Status em tempo real
+- Gráficos de latência
+- Histórico de erros
+- Uptime por período
+
+Atualização via:
+- WebSocket (tempo real)
+- Polling como fallback
+
+------------------------------------------------------------
+
+4.5 Sistema de Alertas Inteligentes
+Alertas configuráveis por sistema:
+- Latência acima de X ms
+- Taxa de erro acima de X %
+- Sistema fora do ar
+- Degradação progressiva
+
+Tipos de alerta:
+- WARNING
+- CRITICAL
+
+Canais:
+- Log
+- WebSocket
+- (Opcional) E-mail simulado
+
+------------------------------------------------------------
+
+4.6 Histórico e Auditoria
+- Registro de todas as métricas coletadas
+- Histórico de incidentes
+- Data, hora e causa provável
+- Tempo de recuperação
+
+------------------------------------------------------------
+
+5. ARQUITETURA DO SISTEMA
+------------------------------------------------------------
+
+Arquitetura baseada em:
+- Clean Architecture
+- Separação de responsabilidades
+- Baixo acoplamento
+- Alta testabilidade
+
+Camadas:
+- Domain (entidades e regras)
+- Application (casos de uso)
+- Infrastructure (DB, métricas, integrações)
+- Interface (Controllers, WebSocket, API)
+
+------------------------------------------------------------
+
+6. STACK TECNOLÓGICA
+------------------------------------------------------------
+
+Backend:
+- Java 17+
+- Spring Boot
+- Spring Web
+- Spring Actuator
+- Spring Security (JWT opcional)
+- WebSocket
+
+Observabilidade:
+- Micrometer
+- Prometheus (opcional)
+- Logs estruturados
+
+Banco de Dados:
+- PostgreSQL
+- JPA / Hibernate
+
+Outros:
+- Docker
+- Docker Compose
+- Maven ou Gradle
+
+------------------------------------------------------------
+
+7. MODELO DE DADOS (RESUMIDO)
+------------------------------------------------------------
+
+System
+- id
+- name
+- baseUrl
+- type
+- environment
+- interval
+- active
+
+Metric
+- id
+- systemId
+- latency
+- statusCode
+- error
+- cpu
+- memory
+- timestamp
+
+Alert
+- id
+- systemId
+- type
+- message
+- createdAt
+- resolved
+
+------------------------------------------------------------
+
+8. DESIGN PATTERNS UTILIZADOS
+------------------------------------------------------------
+- Strategy (tipos de coleta)
+- Observer (alertas)
+- Factory (coletores)
+- Scheduler (coleta periódica)
+- DTO Pattern
+- Repository Pattern
+
+------------------------------------------------------------
+
+9. TESTES
+------------------------------------------------------------
+- Testes unitários de domínio
+- Testes de casos de uso
+- Testes de integração com banco
+- Testes de APIs REST
+
+Ferramentas:
+- JUnit 5
+- Mockito
+- Testcontainers (opcional)
+
+------------------------------------------------------------
+
+10. DIFERENCIAIS DO PROJETO
+------------------------------------------------------------
+- Não é CRUD genérico
+- Problema real de mercado
+- Foco em observabilidade
+- Código limpo e organizado
+- Arquitetura profissional
+- Escalável para múltiplos sistemas
+
+------------------------------------------------------------
+
+11. POSSÍVEIS EVOLUÇÕES
+------------------------------------------------------------
+- Integração real com Prometheus
+- Exportação de métricas
+- Alertas via Telegram / Slack
+- Autenticação multiusuário
+- RBAC (roles)
+- Multi-tenant
+- Deploy em cloud
+
+------------------------------------------------------------
+
+12. COMO ESTE PROJETO AJUDA EM PROCESSOS SELETIVOS
+------------------------------------------------------------
+Este projeto demonstra:
+- Capacidade de pensar como engenheiro
+- Domínio de sistemas distribuídos
+- Conhecimento além de frameworks
+- Experiência com sistemas corporativos
+- Maturidade técnica
+
+É um projeto altamente atrativo para:
+- Backend Java
+- Full Stack
+- Engenharia de Software
+- DevOps / SRE (nível inicial)
+
+============================================================
+FIM DO DOCUMENTO
+============================================================

@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: apm-postgres
+    environment:
+      POSTGRES_DB: apm_platform
+      POSTGRES_USER: apm_user
+      POSTGRES_PASSWORD: apm_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - apm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U apm_user -d apm_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: apm-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/apm_platform
+      SPRING_DATASOURCE_USERNAME: apm_user
+      SPRING_DATASOURCE_PASSWORD: apm_password
+    ports:
+      - "8080:8080"
+    networks:
+      - apm-network
+    volumes:
+      - ./logs:/var/log/apm-platform
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./apm-frontend
+      dockerfile: Dockerfile
+    container_name: apm-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - apm-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  apm-network:
+    driver: bridge
