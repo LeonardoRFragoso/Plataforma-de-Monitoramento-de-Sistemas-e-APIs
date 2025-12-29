@@ -1,11 +1,7 @@
 import axios from 'axios';
 
-// Use relative URL in production (Docker) or full URL in development
-const API_BASE_URL = import.meta.env.VITE_API_URL || (
-  import.meta.env.MODE === 'development' 
-    ? 'http://localhost:8080' 
-    : ''
-);
+// Use relative URL for Docker/production (nginx proxy) or full URL in development
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

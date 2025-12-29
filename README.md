@@ -20,46 +20,8 @@ APM Platform é uma solução profissional de monitoramento de sistemas e APIs, 
 
 ---
 
-## 🎯 Objetivos do Sistema
+## 🎬 Quick Start (Docker)
 
-- Monitoramento centralizado de múltiplos sistemas e APIs
-- Coleta automática de métricas de performance (latência, CPU, memória)
-- Health checks periódicos com classificação de status
-- Sistema de alertas inteligentes baseado em regras configuráveis
-- Dashboard em tempo real com atualização via WebSocket
-- Histórico e auditoria completa de incidentes
-
----
-
-## 🏗️ Arquitetura
-
-O projeto segue **Clean Architecture** com separação em camadas:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   Interface Layer                        │
-│        (Controllers, WebSocket, Security)                │
-└─────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────┐
-│                  Application Layer                       │
-│           (Use Cases, DTOs, Orchestration)               │
-└─────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────┐
-│                    Domain Layer                          │
-│    (Entities, Value Objects, Business Rules, Ports)      │
-└─────────────────────────────────────────────────────────┘
-                          ↑
-┌─────────────────────────────────────────────────────────┐
-│                Infrastructure Layer                      │
-│  (Persistence, Schedulers, Collectors, External APIs)    │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Módulos Maven
-
-| Módulo | Responsabilidade |
 |--------|------------------|
 | **apm-domain** | Lógica de negócio pura, entidades, value objects e ports |
 | **apm-application** | Casos de uso, orchestration e DTOs |

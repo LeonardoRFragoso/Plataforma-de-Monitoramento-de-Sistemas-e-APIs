@@ -70,7 +70,8 @@ public class Metric {
     }
 
     public boolean isSuccessful() {
-        return !hasError && statusCode >= 200 && statusCode < 300;
+        // Aceita 2xx (success) e 3xx (redirects) como successful
+        return !hasError && statusCode >= 200 && statusCode < 400;
     }
 
     public boolean isHighLatency(long thresholdMs) {

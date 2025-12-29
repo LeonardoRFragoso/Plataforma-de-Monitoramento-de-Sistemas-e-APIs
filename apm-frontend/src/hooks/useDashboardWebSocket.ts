@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import type { WebSocketEvent, MetricEvent, AlertEvent, HealthEvent } from '@/types/dashboard';
+import { Client, type IMessage } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import type { MetricEvent, AlertEvent, HealthEvent } from '@/types/dashboard';
 
 interface UseWebSocketReturn {
   connected: boolean;
@@ -8,27 +10,19 @@ interface UseWebSocketReturn {
   lastHealthEvent: HealthEvent | null;
 }
 
-// WebSocket URL configuration
-const getWebSocketURL = (): string => {
-  // Allow override via environment variable
+const getWebSocketUrl = (): string => {
   if (import.meta.env.VITE_WS_URL) {
     return import.meta.env.VITE_WS_URL;
   }
-
-  // Development: connect directly to backend
-  if (import.meta.env.DEV) {
-    return 'ws://localhost:8080/ws/dashboard';
-  }
-
-  // Production: use relative WebSocket URL (nginx proxies /ws -> backend:8080)
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${protocol}//${window.location.host}/ws/dashboard`;
+  
+  // Use relative path - nginx will proxy to backend
+  const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+  const host = window.location.host;
+  return `${protocol}//${host}/ws/dashboard`;
 };
 
-const WS_URL = getWebSocketURL();
-
 export const useDashboardWebSocket = (): UseWebSocketReturn => {
-  const ws = useRef<WebSocket | null>(null);
+  const stompClient = useRef<Client | null>(null);
   const [connected, setConnected] = useState(false);
   const [lastMetric, setLastMetric] = useState<MetricEvent | null>(null);
   const [lastAlert, setLastAlert] = useState<AlertEvent | null>(null);
@@ -36,57 +30,67 @@ export const useDashboardWebSocket = (): UseWebSocketReturn => {
 
   useEffect(() => {
     const connect = () => {
-      try {
-        ws.current = new WebSocket(WS_URL);
-
-        ws.current.onopen = () => {
-          console.log('WebSocket connected');
+      const client = new Client({
+        webSocketFactory: () => new SockJS(getWebSocketUrl()),
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        debug: (str: string) => {
+          console.log('STOMP: ' + str);
+        },
+        onConnect: () => {
+          console.log('STOMP connected');
           setConnected(true);
-        };
 
-        ws.current.onmessage = (event) => {
-          try {
-            const data: WebSocketEvent = JSON.parse(event.data);
-
-            switch (data.type) {
-              case 'METRIC_COLLECTED':
-                setLastMetric(data);
-                break;
-              case 'ALERT_TRIGGERED':
-                setLastAlert(data);
-                break;
-              case 'HEALTH_DEGRADED':
-                setLastHealthEvent(data);
-                break;
+          client.subscribe('/topic/dashboard/metrics', (message: IMessage) => {
+            try {
+              const data: MetricEvent = JSON.parse(message.body);
+              setLastMetric(data);
+            } catch (error) {
+              console.error('Error parsing metric message:', error);
             }
-          } catch (error) {
-            console.error('Error parsing WebSocket message:', error);
-          }
-        };
+          });
 
-        ws.current.onerror = (error) => {
-          console.error('WebSocket error:', error);
-        };
+          client.subscribe('/topic/dashboard/alerts', (message: IMessage) => {
+            try {
+              const data: AlertEvent = JSON.parse(message.body);
+              setLastAlert(data);
+            } catch (error) {
+              console.error('Error parsing alert message:', error);
+            }
+          });
 
-        ws.current.onclose = () => {
+          client.subscribe('/topic/dashboard/health', (message: IMessage) => {
+            try {
+              const data: HealthEvent = JSON.parse(message.body);
+              setLastHealthEvent(data);
+            } catch (error) {
+              console.error('Error parsing health message:', error);
+            }
+          });
+        },
+        onStompError: (frame: any) => {
+          console.error('STOMP error:', frame.headers['message']);
+          console.error('Details:', frame.body);
+        },
+        onWebSocketClose: () => {
           console.log('WebSocket disconnected');
           setConnected(false);
-          
-          // Reconnect after 5 seconds
-          setTimeout(() => {
-            connect();
-          }, 5000);
-        };
-      } catch (error) {
-        console.error('Error connecting to WebSocket:', error);
-      }
+        },
+        onWebSocketError: (error: any) => {
+          console.error('WebSocket error:', error);
+        },
+      });
+
+      stompClient.current = client;
+      client.activate();
     };
 
     connect();
 
     return () => {
-      if (ws.current) {
-        ws.current.close();
+      if (stompClient.current) {
+        stompClient.current.deactivate();
       }
     };
   }, []);
