@@ -13,6 +13,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     { path: '/', label: 'Dashboard', icon: '📊' },
     { path: '/systems', label: 'Systems', icon: '🖥️' },
     { path: '/alerts', label: 'Alerts', icon: '🔔' },
+    { path: '/alert-rules', label: 'Alert Rules', icon: '⚙️' },
   ];
 
   const isActive = (path: string) => {

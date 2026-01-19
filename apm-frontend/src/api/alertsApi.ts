@@ -17,8 +17,25 @@ export const alertsApi = {
     return response.data;
   },
 
+  getAllRules: async (): Promise<AlertRule[]> => {
+    const response = await apiClient.get<AlertRule[]>('/api/v1/alert-rules');
+    return response.data;
+  },
+
   createRule: async (systemId: string, data: CreateAlertRuleRequest): Promise<AlertRule> => {
     const response = await apiClient.post<AlertRule>(`/api/v1/systems/${systemId}/alert-rules`, data);
     return response.data;
+  },
+
+  deleteRule: async (ruleId: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/alert-rules/${ruleId}`);
+  },
+
+  enableRule: async (ruleId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/alert-rules/${ruleId}/enable`);
+  },
+
+  disableRule: async (ruleId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/alert-rules/${ruleId}/disable`);
   },
 };

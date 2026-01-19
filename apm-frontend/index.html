@@ -7,6 +7,10 @@
     <title>apm-frontend</title>
   </head>
   <body>
+    <script>
+      // Polyfill for sockjs-client compatibility with Vite
+      window.global = window;
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

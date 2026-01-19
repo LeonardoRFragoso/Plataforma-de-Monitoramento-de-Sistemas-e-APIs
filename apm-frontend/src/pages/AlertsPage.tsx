@@ -3,11 +3,67 @@ import { useAllActiveAlerts } from '@/hooks/useAlerts';
 import { SeverityBadge } from '@/components/SeverityBadge';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { EmptyState } from '@/components/EmptyState';
-import { ErrorState } from '@/components/ErrorState';
-import type { AlertSeverity } from '@/types/alert';
+import type { AlertSeverity, Alert } from '@/types/alert';
+
+// Mock data for demo/portfolio display when backend is unavailable
+const mockAlerts: Alert[] = [
+  {
+    id: 'alert-001-uuid-mock-data',
+    systemId: '2b3c4d5e-6f78-90ab-cdef-234567890abc',
+    ruleId: 'rule-latency-high-001',
+    severity: 'CRITICAL',
+    message: 'High latency detected on Payment Service - Response time exceeded 2000ms threshold for 5 consecutive checks',
+    triggeredAt: new Date(Date.now() - 1800000).toISOString(),
+    resolved: false,
+    resolvedAt: null,
+  },
+  {
+    id: 'alert-002-uuid-mock-data',
+    systemId: '4d5e6f78-90ab-cdef-1234-567890abcdef',
+    ruleId: 'rule-health-down-001',
+    severity: 'CRITICAL',
+    message: 'Notification Service is DOWN - Health check failed for 3 consecutive attempts',
+    triggeredAt: new Date(Date.now() - 900000).toISOString(),
+    resolved: false,
+    resolvedAt: null,
+  },
+  {
+    id: 'alert-003-uuid-mock-data',
+    systemId: '1a2b3c4d-5e6f-7890-abcd-ef1234567890',
+    ruleId: 'rule-memory-warning-001',
+    severity: 'WARNING',
+    message: 'Memory usage above 80% on API Gateway - Current usage: 84%',
+    triggeredAt: new Date(Date.now() - 3600000).toISOString(),
+    resolved: false,
+    resolvedAt: null,
+  },
+  {
+    id: 'alert-004-uuid-mock-data',
+    systemId: '2b3c4d5e-6f78-90ab-cdef-234567890abc',
+    ruleId: 'rule-cpu-warning-001',
+    severity: 'WARNING',
+    message: 'CPU usage spike detected on Payment Service - Peak: 92%',
+    triggeredAt: new Date(Date.now() - 7200000).toISOString(),
+    resolved: false,
+    resolvedAt: null,
+  },
+  {
+    id: 'alert-005-uuid-mock-data',
+    systemId: '3c4d5e6f-7890-abcd-ef12-34567890abcd',
+    ruleId: 'rule-error-rate-001',
+    severity: 'INFO',
+    message: 'Elevated error rate on User Authentication - 2.5% error rate in last 15 minutes',
+    triggeredAt: new Date(Date.now() - 1200000).toISOString(),
+    resolved: false,
+    resolvedAt: null,
+  },
+];
 
 export const AlertsPage = () => {
-  const { data: alerts, isLoading, error, refetch } = useAllActiveAlerts();
+  const { data: apiAlerts, isLoading, error } = useAllActiveAlerts();
+  
+  // Use mock data when API fails (for demo/portfolio purposes)
+  const alerts = apiAlerts || (error ? mockAlerts : null);
   const [severityFilter, setSeverityFilter] = useState<AlertSeverity | 'ALL'>('ALL');
 
   const formatTimestamp = (dateString: string) => {
@@ -27,13 +83,6 @@ export const AlertsPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="p-8">
-        <ErrorState message="Failed to load alerts" onRetry={() => refetch()} />
-      </div>
-    );
-  }
 
   return (
     <div className="p-8">

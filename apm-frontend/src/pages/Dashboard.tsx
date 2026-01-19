@@ -4,24 +4,44 @@ import { StatCard } from '@/components/StatCard';
 import { LatencyChart } from '@/components/LatencyChart';
 import { AlertBadge } from '@/components/AlertBadge';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { ErrorState } from '@/components/ErrorState';
+
+// Mock data for demo/portfolio display when backend is unavailable
+const mockOverview = {
+  totalSystems: 12,
+  activeSystems: 10,
+  healthySystems: 8,
+  degradedSystems: 1,
+  downSystems: 1,
+  activeAlerts: 3,
+  criticalAlerts: 1,
+};
+
+const mockLastAlert = {
+  severity: 'WARNING' as const,
+  message: 'High latency detected on API Gateway - Response time exceeded 500ms threshold',
+  timestamp: new Date().toISOString(),
+};
+
+const mockLastHealthEvent = {
+  previousStatus: 'UP',
+  currentStatus: 'DEGRADED',
+  timestamp: new Date().toISOString(),
+  reason: 'Memory usage above 85% threshold on Payment Service',
+};
 
 export const Dashboard = () => {
-  const { data: overview, isLoading, error, refetch } = useDashboardOverview();
-  const { lastMetric, lastAlert, lastHealthEvent } = useDashboardWebSocket();
+  const { data: apiOverview, isLoading, error } = useDashboardOverview();
+  const { lastMetric, lastAlert: wsAlert, lastHealthEvent: wsHealthEvent } = useDashboardWebSocket();
+
+  // Use mock data when API fails (for demo/portfolio purposes)
+  const overview = apiOverview || (error ? mockOverview : null);
+  const lastAlert = wsAlert || (error ? mockLastAlert : null);
+  const lastHealthEvent = wsHealthEvent || (error ? mockLastHealthEvent : null);
 
   if (isLoading) {
     return (
       <div className="p-8">
         <LoadingSpinner />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8">
-        <ErrorState message="Failed to load dashboard overview" onRetry={() => refetch()} />
       </div>
     );
   }

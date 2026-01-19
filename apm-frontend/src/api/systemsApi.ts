@@ -29,4 +29,8 @@ export const systemsApi = {
   deactivate: async (systemId: string): Promise<void> => {
     await apiClient.post(`/api/v1/systems/${systemId}/deactivate`);
   },
+
+  delete: async (systemId: string): Promise<void> => {
+    await apiClient.delete(`/api/v1/systems/${systemId}`);
+  },
 };

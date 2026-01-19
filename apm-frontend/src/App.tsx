@@ -4,6 +4,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { SystemsPage } from '@/pages/SystemsPage';
 import { SystemDetailPage } from '@/pages/SystemDetailPage';
 import { AlertsPage } from '@/pages/AlertsPage';
+import { AlertRulesPage } from '@/pages/AlertRulesPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/systems" element={<SystemsPage />} />
           <Route path="/systems/:systemId" element={<SystemDetailPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/alert-rules" element={<AlertRulesPage />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

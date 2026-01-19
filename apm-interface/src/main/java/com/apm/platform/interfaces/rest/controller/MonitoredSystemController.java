@@ -114,4 +114,17 @@ public class MonitoredSystemController {
         deactivateSystemUseCase.execute(systemId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{systemId}")
+    public ResponseEntity<Void> deleteSystem(@PathVariable("systemId") String systemId) {
+        logger.info("DELETE /api/v1/systems/{} - Deleting system", systemId);
+        
+        systemRepository.findById(systemId)
+            .orElseThrow(() -> new MonitoredSystemNotFoundException(systemId));
+        
+        systemRepository.deleteById(systemId);
+        logger.info("System {} deleted successfully", systemId);
+        
+        return ResponseEntity.noContent().build();
+    }
 }

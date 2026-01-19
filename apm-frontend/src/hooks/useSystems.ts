@@ -68,3 +68,15 @@ export const useDeactivateSystem = () => {
     },
   });
 };
+
+export const useDeleteSystem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (systemId: string) => systemsApi.delete(systemId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['systems'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+};

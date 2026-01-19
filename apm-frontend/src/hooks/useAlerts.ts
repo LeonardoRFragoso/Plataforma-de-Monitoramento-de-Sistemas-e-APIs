@@ -25,15 +25,55 @@ export const useAlertRules = (systemId: string) => {
   });
 };
 
+export const useAllAlertRules = () => {
+  return useQuery({
+    queryKey: ['alert-rules', 'all'],
+    queryFn: () => alertsApi.getAllRules(),
+  });
+};
+
 export const useCreateAlertRule = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ systemId, data }: { systemId: string; data: CreateAlertRuleRequest }) =>
       alertsApi.createRule(systemId, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['alert-rules', variables.systemId] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['alert-rules'] });
       queryClient.invalidateQueries({ queryKey: ['alerts'] });
+    },
+  });
+};
+
+export const useDeleteAlertRule = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ruleId: string) => alertsApi.deleteRule(ruleId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['alert-rules'] });
+    },
+  });
+};
+
+export const useEnableAlertRule = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ruleId: string) => alertsApi.enableRule(ruleId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['alert-rules'] });
+    },
+  });
+};
+
+export const useDisableAlertRule = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ruleId: string) => alertsApi.disableRule(ruleId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['alert-rules'] });
     },
   });
 };

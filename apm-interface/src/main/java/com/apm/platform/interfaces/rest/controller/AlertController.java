@@ -87,4 +87,38 @@ public class AlertController {
         
         return ResponseEntity.ok(alerts);
     }
+
+    @GetMapping("/alert-rules")
+    public ResponseEntity<List<AlertRuleResponse>> getAllAlertRules() {
+        List<AlertRuleResponse> rules = alertRuleRepository.findAll()
+            .stream()
+            .map(AlertRuleMapper::toResponse)
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(rules);
+    }
+
+    @DeleteMapping("/alert-rules/{ruleId}")
+    public ResponseEntity<Void> deleteAlertRule(@PathVariable("ruleId") String ruleId) {
+        alertRuleRepository.deleteById(ruleId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/alert-rules/{ruleId}/enable")
+    public ResponseEntity<Void> enableAlertRule(@PathVariable("ruleId") String ruleId) {
+        alertRuleRepository.findById(ruleId).ifPresent(rule -> {
+            rule.enable();
+            alertRuleRepository.save(rule);
+        });
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/alert-rules/{ruleId}/disable")
+    public ResponseEntity<Void> disableAlertRule(@PathVariable("ruleId") String ruleId) {
+        alertRuleRepository.findById(ruleId).ifPresent(rule -> {
+            rule.disable();
+            alertRuleRepository.save(rule);
+        });
+        return ResponseEntity.noContent().build();
+    }
 }
