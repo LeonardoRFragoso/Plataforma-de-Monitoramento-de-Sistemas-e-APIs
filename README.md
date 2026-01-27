@@ -22,7 +22,26 @@ APM Platform é uma solução profissional de monitoramento de sistemas e APIs, 
 
 ## 🎬 Quick Start (Docker)
 
-|--------|------------------|
+```bash
+# Clone o repositório
+git clone https://github.com/LeonardoRFragoso/apm-platform.git
+cd apm-platform
+
+# Inicie com Docker Compose
+docker-compose up -d
+
+# Acesse a aplicação
+# Frontend: http://localhost:3000
+# Backend: http://localhost:8080
+# Swagger: http://localhost:8080/swagger-ui.html
+```
+
+---
+
+## 📦 Módulos do Projeto
+
+| Módulo | Descrição |
+|--------|-----------|
 | **apm-domain** | Lógica de negócio pura, entidades, value objects e ports |
 | **apm-application** | Casos de uso, orchestration e DTOs |
 | **apm-infrastructure** | JPA, schedulers, collectors, integrações externas |
